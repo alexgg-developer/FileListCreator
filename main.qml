@@ -7,8 +7,8 @@ import Custom.Backend 1.0
 
 ApplicationWindow {
     visible: true
-    width: 640
-    height: 480
+    width: 1440
+    height: 810
     title: qsTr("Hello World")
 
     BackEnd {
@@ -41,18 +41,49 @@ ApplicationWindow {
         Page {
             TableView {
                 TableViewColumn {
-                    role: "title"
-                    title: "Title"
+                    role: "FileName"
+                    title: "File name"
+                    width: 300
+                }
+                TableViewColumn {
+                    role: "Size"
+                    title: "Size"
                     width: 100
                 }
                 TableViewColumn {
-                    role: "author"
-                    title: "Author"
-                    width: 200
+                    role: "Path"
+                    title: "Path"
+                    width: 500
                 }
-                model: myModel
-                anchors.centerIn: parent
-                anchors.fill: parent
+                id: foundFiles
+                model: foundFilesModel
+                anchors.left: parent.left
+                width: parent.width * 0.4
+                height: parent.height * 0.75
+            }
+
+
+            TableView {
+                TableViewColumn {
+                    role: "FileName"
+                    title: "File name"
+                    width: 300
+                }
+                TableViewColumn {
+                    role: "Size"
+                    title: "Size"
+                    width: 100
+                }
+                TableViewColumn {
+                    role: "Path"
+                    title: "Path"
+                    width: 100
+                }
+                id: selectedFiles
+                model: animalModel
+                anchors.right: parent.right
+                width: parent.width * 0.4
+                height: parent.height * 0.75
             }
         }
 

@@ -4,7 +4,9 @@ CONFIG += c++11
 
 SOURCES += main.cpp \
     Backend.cpp \
-    FileListing.cpp
+    FileListing.cpp \
+    FilesViewModel.cpp \
+    FileModel.cpp
 
 RESOURCES += qml.qrc
 
@@ -32,4 +34,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     BackEnd.h \
-    FileListing.h
+    FileListing.h \
+    FilesViewModel.h \
+    FileModel.h
