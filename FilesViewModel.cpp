@@ -1,10 +1,14 @@
 ﻿#include "FilesViewModel.h"
+#include "QtGlobals.h"
+
 #include <queue>
 
-FilesViewModel::FilesViewModel(QQmlApplicationEngine& engine):
-    m_engine(engine)
-{
 
+FilesViewModel::FilesViewModel(QObject *parent)
+{
+    QtGlobals::getInstance()->engine->rootContext()->setContextProperty("foundFilesModel", &m_foundFilesModel);
+    //listFiles(QString("TestingFolder"));
+    //listFiles(QString("TestingFolder"));
 }
 
 void FilesViewModel::listFiles(QString const & path)
@@ -34,7 +38,13 @@ void FilesViewModel::listFiles(QString const & path)
     }
 }
 
-void FilesViewModel::updateModels()
+//void FilesViewModel::updateModels()
+//{
+//    QtGlobals::engine->rootContext()->setContextProperty("foundFilesModel", &m_foundFilesModel);
+//}
+
+
+QString FilesViewModel::userName()
 {
-    m_engine.rootContext()->setContextProperty("foundFilesModel", &m_foundFilesModel);
+    return "m_userName";
 }

@@ -26,7 +26,7 @@ QVariant FileModel::data(const QModelIndex & index, int role) const {
     if (role == FileName)
         return file.fileName();
     else if (role == Size)
-        return file.size() / 1000.0f;
+        return formatSize(file.size());
     else if (role == Path)
         return file.absoluteFilePath();
     return QVariant();
@@ -40,8 +40,7 @@ QString FileModel::formatSize(qint64 size) const {
         formattedSize /= 1000.0;
         ++nameSelected;
     }
-    //return formattedSize;
-    return QString();
+    return QString::number(formattedSize, 'f', 2) + nameBytes[nameSelected];
 }
 
 QHash<int, QByteArray> FileModel::roleNames() const {

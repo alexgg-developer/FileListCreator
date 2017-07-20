@@ -6,7 +6,8 @@ SOURCES += main.cpp \
     Backend.cpp \
     FileListing.cpp \
     FilesViewModel.cpp \
-    FileModel.cpp
+    FileModel.cpp \
+    QtGlobals.cpp
 
 RESOURCES += qml.qrc
 
@@ -36,4 +37,5 @@ HEADERS += \
     BackEnd.h \
     FileListing.h \
     FilesViewModel.h \
-    FileModel.h
+    FileModel.h \
+    QtGlobals.h

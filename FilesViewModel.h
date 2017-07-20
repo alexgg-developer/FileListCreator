@@ -8,15 +8,19 @@
 
 #include "FileModel.h"
 
-class FilesViewModel
+class FilesViewModel: public QObject
 {
+    Q_OBJECT
+    Q_PROPERTY(QString userName READ userName)
 public:
-    FilesViewModel(QQmlApplicationEngine& engine);
+    explicit FilesViewModel(QObject *parent = nullptr);
     void updateModels();
     void listFiles(QString const & path);
+    QString userName();
 private:
-    QQmlApplicationEngine& m_engine;
     FileModel m_foundFilesModel;
+signals:
+public slots:
 };
 
 #endif // FILESVIEWMODEL_H
