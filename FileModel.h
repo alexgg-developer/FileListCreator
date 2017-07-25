@@ -21,12 +21,14 @@ public:
     void addFile(const QFileInfo &file);
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
     QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
+    const QFileInfo& getRow(int row) const;
+    void emptyList();
 
 protected:
     QHash<int, QByteArray> roleNames() const;
 
 private:
-    QList<QFileInfo> m_filesFound;
+    QList<QFileInfo> m_fileInfoList;
     QString formatSize(qint64 size) const;
 
 signals:

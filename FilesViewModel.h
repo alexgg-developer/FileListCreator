@@ -15,12 +15,14 @@ class FilesViewModel: public QObject
 public:
     explicit FilesViewModel(QObject *parent = nullptr);
     void updateModels();
-    void listFiles(QString const & path);
     QString userName();
 private:
-    FileModel m_foundFilesModel;
+    FileModel m_foundFilesModel, m_selectedFilesModel;
+    void makeRandomSelection();
 signals:
 public slots:
+    void onGenerateListPressed();
+    void listFiles(QString const & path);
 };
 
 #endif // FILESVIEWMODEL_H
