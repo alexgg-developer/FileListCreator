@@ -18,11 +18,15 @@ public:
     QString userName();
 private:
     FileModel m_foundFilesModel, m_selectedFilesModel;
-    void makeRandomSelection();
+    void makeRandomSelection(int maxSize);
+    void listFiles(QString const & path, QString const & extensions);
+    bool createDir(QString & path) const;
+    void copyFiles(QString const & path) const;
 signals:
 public slots:
-    void onGenerateListPressed();
-    void listFiles(QString const & path);
+    void onGenerateListPressed(int size);
+    void onSearchFilesPressed(QString const & path, QString const & extensions);
+    void onCopyFilesPressed();
 };
 
 #endif // FILESVIEWMODEL_H

@@ -5,6 +5,8 @@
 #include <iostream>
 #include <random>
 
+#include <QDate>
+
 using namespace std;
 
 FilesViewModel::FilesViewModel(QObject *parent)
@@ -15,11 +17,22 @@ FilesViewModel::FilesViewModel(QObject *parent)
     //listFiles(QString("TestingFolder"));
 }
 
-void FilesViewModel::listFiles(QString const & path)
+void FilesViewModel::onSearchFilesPressed(QString const & path, QString const & extensions)
 {
+    m_foundFilesModel.emptyList();
+    listFiles(path, extensions);
+}
+
+void FilesViewModel::listFiles(QString const & path, QString const & extensions)
+{
+    const int MIN_FILE_SIZE = 1000 * 1000; //1MB
     QDir dir(QDir::toNativeSeparators(path));
     std::queue<QFileInfoList> fileInfoLists;
-    QStringList filters;
+    QStringList filters, extensionList;
+    if(extensions != "") {
+        extensionList = extensions.split(';');
+    }
+    //filters << "*.pdf";
     if(!dir.exists()) {
         return;
     }
@@ -36,17 +49,16 @@ void FilesViewModel::listFiles(QString const & path)
                 }
             }
             else {
-                m_foundFilesModel.addFile(fileInfo);
+                QString suffix = fileInfo.completeSuffix();
+                if(extensionList.empty() || extensionList.contains(suffix, Qt::CaseInsensitive)) {
+                    if(fileInfo.size() > MIN_FILE_SIZE) {
+                        m_foundFilesModel.addFile(fileInfo);
+                    }
+                }
             }
         }
     }
 }
-
-//void FilesViewModel::updateModels()
-//{
-//    QtGlobals::engine->rootContext()->setContextProperty("foundFilesModel", &m_foundFilesModel);
-//}
-
 
 QString FilesViewModel::userName()
 {
@@ -54,20 +66,19 @@ QString FilesViewModel::userName()
 }
 
 
-void FilesViewModel::onGenerateListPressed()
+void FilesViewModel::onGenerateListPressed(int size)
 {
-    cout << "Pressed" << endl;
+    cout << "Pressed" << size << endl;
     m_selectedFilesModel.emptyList();
-    makeRandomSelection();
+    makeRandomSelection(size * 1024);
 }
 
-void FilesViewModel::makeRandomSelection()
+void FilesViewModel::makeRandomSelection(int maxSize)
 {
     std::random_device r;
     std::default_random_engine e1(r());
     int rows = m_foundFilesModel.rowCount();
     std::uniform_int_distribution<int> uniform_dist(0, rows - 1);
-    int max_size = 1000;
     int i = 0;
     std::vector<int> selectedRows(rows, 0);
     int currentSize = 0;
@@ -80,10 +91,9 @@ void FilesViewModel::makeRandomSelection()
             const QFileInfo& fileSelected = m_foundFilesModel.getRow(row);
             int fileSize = fileSelected.size() / 1000;
             selectedRows[row] = 1;
-            if(currentSize + fileSize < max_size) {
+            if(currentSize + fileSize < maxSize) {
                 m_selectedFilesModel.addFile(fileSelected);
                 currentSize += fileSize;
-                cout << i << ":" << currentSize << endl;
             }
             ++rowsChecked;
         }
@@ -91,3 +101,34 @@ void FilesViewModel::makeRandomSelection()
     }
 }
 
+void FilesViewModel::onCopyFilesPressed()
+{
+    QString path = "";
+    if(createDir(path)) {
+        copyFiles(path);
+    }
+}
+
+bool FilesViewModel::createDir(QString & path) const
+{
+    QString originalPath;
+    originalPath = path = QDate::currentDate().toString("files_dd_MM_yyyy");
+    QDir dir(QDir::toNativeSeparators(path));
+    int i = 1;
+    while(dir.exists()) {
+        path = originalPath + QString("_") + QString::number(i);
+        dir.setPath(path);
+        ++i;
+    }
+    QDir root = QDir::currentPath();
+    return root.mkdir(path);
+}
+
+void FilesViewModel::copyFiles(QString const & path) const
+{
+    int rowCount = m_selectedFilesModel.rowCount();
+    for(int i = 0; i < rowCount; ++i) {
+        QFileInfo const &file = m_selectedFilesModel.getRow(i);
+        QFile::copy(file.absoluteFilePath(), path + QString("/") + file.fileName());
+    }
+}

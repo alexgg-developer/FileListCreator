@@ -37,6 +37,7 @@ const QFileInfo& FileModel::getRow(int row) const
     return m_fileInfoList[row];
 }
 
+
 QString FileModel::formatSize(qint64 size) const {
     double formattedSize = size;
     int nameSelected = 0;

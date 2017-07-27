@@ -29,10 +29,8 @@ ApplicationWindow {
         selectFolder: true
         selectMultiple: false
         onAccepted: {
-            console.log("You chose: " + fileDialog.fileUrls);
             var path = String(fileDialog.fileUrls)
             pathToSearchTextField.text = path.substring(7, path.length)
-            //Qt.quit()
         }
     }
 
@@ -71,6 +69,7 @@ ApplicationWindow {
             anchors.right: selectFolderButton.left
             anchors.left: parent.left
             Layout.alignment: Qt.AlignLeft
+            selectByMouse: true
         }
         Button
         {
@@ -98,8 +97,20 @@ ApplicationWindow {
             //anchors.right: parent.right
             Layout.alignment: Qt.AlignRight
             onClicked: {
-                filesViewModel.listFiles(pathToSearchTextField.text)
+                filesViewModel.onSearchFilesPressed(pathToSearchTextField.text, filtersTextField.text)
             }
+        }
+
+
+        TextField {
+            id: filtersTextField
+            placeholderText: qsTr("Enter every extension to search separated by comma")
+            anchors.top: pathToSearchTextField.bottom
+            anchors.topMargin: 20
+            anchors.right: pathToSearchTextField.right
+            anchors.left: pathToSearchTextField.left
+            Layout.alignment: Qt.AlignLeft
+            selectByMouse: true
         }
 
 
@@ -138,15 +149,50 @@ ApplicationWindow {
             Layout.alignment: Qt.AlignTop
         }
 
+
+        TextField {
+            id: sizeOfSelection
+            placeholderText: qsTr("Enter total size of selection in MB")
+            anchors.top: selectedFiles.bottom
+            anchors.topMargin: 20
+            anchors.rightMargin: 5
+            anchors.leftMargin: 5
+            anchors.left: parent.left
+            Layout.alignment: Qt.AlignLeft
+            Layout.preferredWidth: 250
+            selectByMouse: true
+        }
+
         Button
         {
             id: generateButton
             text: "Generate random list"
             anchors.top: selectedFiles.bottom
             anchors.topMargin: 20
-            Layout.alignment: Qt.AlignHCenter
+            anchors.leftMargin: 10
+            anchors.left: sizeOfSelection.right
 
-            onClicked: filesViewModel.onGenerateListPressed()
+            onClicked: {
+                var integerSize = parseInt(sizeOfSelection.text)
+                if(!isNaN(integerSize)) {
+                    filesViewModel.onGenerateListPressed(integerSize)
+                }
+            }
         }
+
+        Button
+        {
+            id: copyFilesButton
+            text: "Copy files on the list"
+            anchors.top: selectedFiles.bottom
+            anchors.topMargin: 20
+            anchors.leftMargin: 10
+            anchors.left: generateButton.right
+
+            onClicked: {
+                filesViewModel.onCopyFilesPressed()
+            }
+        }
+
     }
 }
